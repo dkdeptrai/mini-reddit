@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>MiniReddit</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>MiniReddit</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": Rails.env.production? ? "reload" : "" %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <%= javascript_importmap_tags %>
+  <%= hotwire_livereload_tags if Rails.env.development? %>
+</head>
 
-  <body>
-    <%= yield %>
-  </body>
+<body>
+<main class="container mx-auto mt-28 px-5 flex">
+  <% if current_user.nil? %>
+    <%= button_to "Sign In", new_user_session_path, method: :get %>
+    <%= button_to "Sign In With Google", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
+  <% else %>
+    <%#= link_to "Sign Out", destroy_user_session_path, method: :delete %>
+    <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
+  <% end %>
+  <%= yield %>
+</main>
+</body>
 </html>
+

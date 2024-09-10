@@ -60,3 +60,18 @@ group :development do
   # gem "spring"
 end
 
+gem 'hotwire-livereload', '~> 1.4', group: :development
+
+
+
+gem "devise", "~> 4.9"
+
+gem "omniauth-facebook", "~> 10.0"
+
+gem "omniauth-rails_csrf_protection", "~> 1.0"
+
+gem "annotate", "~> 3.2"
+
+gem "tailwindcss-rails", "~> 2.7"
+
+gem "omniauth-google-oauth2", "~> 1.1"
