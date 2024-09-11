@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :posts
+  resources :votes
+  resources :posts do
+    post 'upvote', to: 'votes#upvote'
+    post 'downvote', to: 'votes#downvote'
+  end
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',

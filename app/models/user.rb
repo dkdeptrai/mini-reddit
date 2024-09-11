@@ -5,8 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: %i[google_oauth2]
 
 
-  has_many :posts
-
+  has_many :posts, dependent: :destroy
+  has_many :votes, dependent: :destroy
   validates :username, uniqueness: true, presence: true
 
   def self.from_omniauth(access_token)

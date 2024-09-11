@@ -11,16 +11,23 @@
   <%= javascript_importmap_tags %>
   <%= hotwire_livereload_tags if Rails.env.development? %>
 </head>
+<header class="w-full">
+  <nav class="bg-gray-800 text-white p-5 w-auto">
+    <div class="container flex flex-col gap-8 justify-between">
+      <a href="/" class="text-2xl font-bold">MiniReddit</a>
+      <div>
+        <% if current_user.nil? %>
+          <%= button_to "Log In", new_user_session_path, method: :get %>
+        <% else %>
+          <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+</header>
+<body class="w-full">
 
-<body>
 <main class="container mx-auto mt-28 px-5 flex">
-  <% if current_user.nil? %>
-    <%= button_to "Sign In", new_user_session_path, method: :get %>
-    <%= button_to "Sign In With Google", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
-  <% else %>
-    <%#= link_to "Sign Out", destroy_user_session_path, method: :delete %>
-    <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
-  <% end %>
   <%= yield %>
 </main>
 </body>
