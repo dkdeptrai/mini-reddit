@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_11_073218) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_12_135503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_11_073218) do
     t.string "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "votes_count"
+    t.integer "votes_count", default: 0
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -35,20 +35,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_11_073218) do
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "votes", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "post_id", null: false
     t.integer "vote_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_votes_on_post_id"
-    t.index ["user_id", "post_id"], name: "index_votes_on_user_id_and_post_id", unique: true
+    t.string "votable_type", null: false
+    t.bigint "votable_id", null: false
     t.index ["user_id"], name: "index_votes_on_user_id"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable"
   end
 
   add_foreign_key "posts", "users"
-  add_foreign_key "votes", "posts"
   add_foreign_key "votes", "users"
 end

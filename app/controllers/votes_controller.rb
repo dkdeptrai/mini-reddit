@@ -19,22 +19,20 @@ class VotesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def find_or_initialize_vote
-    @vote = Vote.find_by(user_id: current_user.id, post_id: @post.id) || Vote.new(user_id: current_user.id, post_id: @post.id)
+    @vote = Vote.find_by(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post' ) || Vote.new(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post')
   end
 
   def handle_vote(vote_type)
-    Rails.logger.debug "Before vote: #{@post.votes.count}"
+    Rails.logger.debug("Vote: #{@vote.inspect}")
     if @vote.vote_type == vote_type
       @vote.destroy!
     else
       @vote.destroy!
-      @vote = Vote.new(user_id: current_user.id, post_id: @post.id)
+      @vote = Vote.new(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post')
       @vote.vote_type = vote_type
       @vote.save!
     end
-    Rails.logger.debug "After vote: #{@post.votes.count}"
     @post.reload
-    Rails.logger.debug "After reload: #{@post.votes.count}"
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@post), partial: 'posts/post', locals: { post: @post, user: current_user }) }
       format.html { redirect_to posts_path }
@@ -43,7 +41,7 @@ class VotesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def vote_params
-    params.require(:vote).permit(:user_id, :post_id, :vote_type)
+    params.require(:vote).permit(:user_id, :votable_id, :votable_type, :vote_type)
   end
 
 end
