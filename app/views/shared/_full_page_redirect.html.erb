@@ -1,0 +1,12 @@
+<script>
+	document.addEventListener('turbo:before-fetch-request', function(event) {
+		event.preventDefault();
+		window.Turbo.visit('<%= url %>', { action: 'replace' });
+	}, { once: true });
+
+	window.location.href = '<%= url %>';
+</script>
+
+<div style="display:none;">
+  <%= link_to "Click here if you're not redirected automatically", url %>
+</div>
