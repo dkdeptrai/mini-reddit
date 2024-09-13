@@ -120,6 +120,9 @@ GEM
       railties (>= 6.0.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
+    image_processing (1.13.0)
+      mini_magick (>= 4.9.5, < 5)
+      ruby-vips (>= 2.0.17, < 3)
     importmap-rails (2.0.1)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -146,6 +149,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    mini_magick (4.13.2)
     mini_mime (1.1.5)
     minitest (5.25.1)
     msgpack (1.7.2)
@@ -262,6 +266,9 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    ruby-vips (2.2.2)
+      ffi (~> 1.12)
+      logger
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
@@ -324,6 +331,7 @@ DEPENDENCIES
   debug
   devise (~> 4.9)
   hotwire-livereload (~> 1.4)
+  image_processing (~> 1.2)
   importmap-rails
   jbuilder
   omniauth-facebook (~> 10.0)

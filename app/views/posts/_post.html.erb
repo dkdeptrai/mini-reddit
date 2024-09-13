@@ -1,6 +1,5 @@
 <div id=<%= dom_id(post) %>>
 
-  <%#= turbo_frame_tag dom_id(post) do %>
     <p class="my-5">
       <strong class="block font-medium text-2xl mb-1">User:</strong>
       <%= post.user.username %>
@@ -23,6 +22,10 @@
       <%= button_to "Upvote", post_upvote_path(post), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
       <%= button_to "Downvote", post_downvote_path(post), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
     </div>
+  
+    <div class="comments">
+      <strong class="block font-medium mb-1">Comments:</strong>
+      <%= render post.comments %>
+    </div>
 
-  <%# end %>
 </div>
