@@ -13,3 +13,22 @@
  *= require_tree .
  *= require_self
  */
+
+.image-container {
+  display: flex;
+  height: 100vh;
+}
+
+.individual-image {
+  width: 10%;
+  height: auto;
+  border: #ff243d 2px solid;
+  object-fit: cover;
+  transition: width 0.5s;
+}
+
+.individual-image:hover {
+  width: 30%;
+}
+
+

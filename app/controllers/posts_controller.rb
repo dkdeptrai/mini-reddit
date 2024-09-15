@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
 
   before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :load_comments, only: %i[show]
 
   # GET /posts or /posts.json
   def index
@@ -10,6 +11,8 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+    @comment = @post.comments.build
+    @comments = @post.comments.includes(:user).where.not(id: nil).order(created_at: :desc)
   end
 
   # GET /posts/new
@@ -64,6 +67,10 @@ class PostsController < ApplicationController
     def set_post
       @post = Post.find(params[:id])
     end
+
+  def load_comments
+    @comments = @post.comments.includes(:user).where.not(id: nil).order(created_at: :desc)
+  end
 
     # Only allow a list of trusted parameters through.
     def post_params

@@ -3,7 +3,7 @@
 # Table name: posts
 #
 #  id          :bigint           not null, primary key
-#  content     :string
+#  content     :text
 #  title       :string
 #  votes_count :integer          default(0)
 #  created_at  :datetime         not null
@@ -22,5 +22,10 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :votes, as: :votable, dependent: :destroy
   has_many :comments, as: :commentable, dependent: :destroy
+
+  validates :title, presence: true
+  validates :content, presence: true
+
+  has_rich_text :content
 end
 

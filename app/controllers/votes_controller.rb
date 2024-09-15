@@ -3,7 +3,7 @@ class VotesController < ApplicationController
 
   # before_action :authenticate_user!, only: %i[upvote downvote]
   before_action :check_signed_in
-  before_action :find_post, unless: :skip_action?
+  before_action :find_votable, unless: :skip_action?
   before_action :find_or_initialize_vote, unless: :skip_action?
 
   def upvote
@@ -18,7 +18,6 @@ class VotesController < ApplicationController
 
   def check_signed_in
     unless user_signed_in?
-      Rails.logger.debug("About to redirect to sign in page")
       # respond_to do |format|
       #   format.html { redirect_to new_user_session_path, notice: 'You have to sign up or sign in before doing that action.' }
       #   format.turbo_stream do
@@ -33,13 +32,18 @@ class VotesController < ApplicationController
     end
   end
 
-  def find_post
-    @post = Post.find(params[:post_id])
+  def find_votable
+    # @votable = params[:votable_type].classify.constantize.find(params[:votable_id])
+    if params[:post_id]
+      @votable = Post.find(params[:post_id])
+    elsif params[:comment_id]
+      @votable = Comment.find(params[:comment_id])
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.
   def find_or_initialize_vote
-    @vote = Vote.find_by(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post') || Vote.new(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post')
+    @vote = Vote.find_by(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post') || Vote.new(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post')
   end
 
   def handle_vote(vote_type)
@@ -47,13 +51,13 @@ class VotesController < ApplicationController
       @vote.destroy!
     else
       @vote.destroy!
-      @vote = Vote.new(user_id: current_user.id, votable_id: @post.id, votable_type: 'Post')
+      @vote = Vote.new(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post')
       @vote.vote_type = vote_type
       @vote.save!
     end
-    @post.reload
+    @votable.reload
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@post), partial: 'posts/post', locals: { post: @post, user: current_user }) }
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@votable), partial: 'posts/post', locals: { post: @votable, user: current_user }) }
       format.html { redirect_to posts_path }
     end
   end

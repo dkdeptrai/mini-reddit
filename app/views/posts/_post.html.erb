@@ -19,12 +19,13 @@
       <%= pluralize(post.votes_count || 0, 'votes') %>
     </p>
     <div class="voting-buttons flex flex-row gap-8">
-      <%= button_to "Upvote", post_upvote_path(post), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
-      <%= button_to "Downvote", post_downvote_path(post), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
+      <%= button_to "Upvote", upvote_post_path(post, votable_type: 'Post', votable_id: post.id), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
+      <%= button_to "Downvote", upvote_post_path(post, votable_type: 'Post', votable_id: post.id), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
     </div>
   
     <div class="comments">
-      <strong class="block font-medium mb-1">Comments:</strong>
+      <%= link_to 'Comments:', post_path(post), class: "block font-medium mb-1" %>
+<!--      <strong class="block font-medium mb-1">Comments:</strong>-->
       <%= render post.comments %>
     </div>
 
