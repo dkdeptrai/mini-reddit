@@ -59,6 +59,8 @@ class Vote < ApplicationRecord
   end
 
   def broadcast_vote
-    broadcast_replace_to('posts', target: "post_#{votable.id}", partial: 'posts/post', locals: { post: votable, user: user })
+    broadcast_replace_to('posts', target: "post_#{votable.id}", partial: 'posts/post', locals: { post: votable, user: user }) if votable_type == 'Post'
+    broadcast_replace_to('comments', target: "comment_#{votable.id}", partial: 'comments/comment', locals: { comment: votable, user: user }) if votable_type == 'Comment'
+
   end
 end

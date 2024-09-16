@@ -7,8 +7,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    @comment = @commentable.comments.new(comment_params)
-    @comment.user = current_user
+    @comment = @commentable.comments.build(comment_params)
 
     if @comment.save
       redirect_to @commentable, notice: 'Comment was successfully created.'
@@ -24,7 +23,6 @@ class CommentsController < ApplicationController
   end
 
   def set_commentable
-    # @commentable = params[:commentable].classify.constantize.find(commentable_id)
     if params[:post_id]
       @commentable = Post.find(params[:post_id])
     elsif params[:comment_id]

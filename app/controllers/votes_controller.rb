@@ -1,7 +1,6 @@
 class VotesController < ApplicationController
   include ActionView::RecordIdentifier
 
-  # before_action :authenticate_user!, only: %i[upvote downvote]
   before_action :check_signed_in
   before_action :find_votable, unless: :skip_action?
   before_action :find_or_initialize_vote, unless: :skip_action?
@@ -18,32 +17,37 @@ class VotesController < ApplicationController
 
   def check_signed_in
     unless user_signed_in?
-      # respond_to do |format|
-      #   format.html { redirect_to new_user_session_path, notice: 'You have to sign up or sign in before doing that action.' }
-      #   format.turbo_stream do
-      #     render turbo_stream: [
-      #       turbo_stream.update("page", partial: "shared/full_page_redirect",
-      #                           locals: { url: new_user_session_path })
-      #     ]
-      #   end
-      # end
       redirect_to new_user_session_path, notice: 'You have to sign up or sign in before doing that action.'
       @skip_action = true
     end
   end
 
   def find_votable
-    # @votable = params[:votable_type].classify.constantize.find(params[:votable_id])
-    if params[:post_id]
-      @votable = Post.find(params[:post_id])
-    elsif params[:comment_id]
-      @votable = Comment.find(params[:comment_id])
-    end
-  end
+    Rails.logger.debug("Params: #{params.inspect}")
 
+    if params[:comment_id]
+      @votable = Comment.find(params[:comment_id])
+      Rails.logger.debug("Found comment: #{@votable.id}")
+    elsif params[:post_id]
+      @votable = Post.find(params[:post_id])
+      Rails.logger.debug("Found post: #{@votable.id}")
+    elsif params[:id]
+      if params[:controller] == 'posts'
+        @votable = Post.find(params[:id])
+        Rails.logger.debug("Found post from id: #{@votable.id}")
+      else
+        @votable = Comment.find(params[:id])
+        Rails.logger.debug("Found comment from id: #{@votable.id}")
+      end
+    else
+      raise ActiveRecord::RecordNotFound, "Couldn't find a votable object"
+    end
+
+    Rails.logger.debug("Votable: #{@votable.class.name} with ID: #{@votable.id}")
+  end
   # Use callbacks to share common setup or constraints between actions.
   def find_or_initialize_vote
-    @vote = Vote.find_by(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post') || Vote.new(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post')
+    @vote = Vote.find_by(user_id: current_user.id, votable_id: @votable.id, votable_type: @votable.class.name) || Vote.new(user_id: current_user.id, votable_id: @votable.id, votable_type: @votable.class.name)
   end
 
   def handle_vote(vote_type)
@@ -51,20 +55,20 @@ class VotesController < ApplicationController
       @vote.destroy!
     else
       @vote.destroy!
-      @vote = Vote.new(user_id: current_user.id, votable_id: @votable.id, votable_type: 'Post')
+      find_or_initialize_vote
       @vote.vote_type = vote_type
       @vote.save!
     end
     @votable.reload
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@votable), partial: 'posts/post', locals: { post: @votable, user: current_user }) }
+      format.turbo_stream
       format.html { redirect_to posts_path }
     end
   end
 
   # Only allow a list of trusted parameters through.
   def vote_params
-    params.require(:vote).permit(:user_id, :votable_id, :votable_type, :vote_type)
+    params.require(:vote).permit(:user_id, :post_id, :comment_id, :vote_type)
   end
 
   def skip_action?

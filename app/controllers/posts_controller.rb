@@ -11,8 +11,9 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
-    @comment = @post.comments.build
+    @new_comment = @post.comments.build
     @comments = @post.comments.includes(:user).where.not(id: nil).order(created_at: :desc)
+    Rails.logger.debug("Comments: #{@comments.inspect}")
   end
 
   # GET /posts/new
