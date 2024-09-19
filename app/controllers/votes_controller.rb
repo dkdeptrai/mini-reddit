@@ -1,7 +1,7 @@
 class VotesController < ApplicationController
   include ActionView::RecordIdentifier
+  include Authenticatable
 
-  before_action :check_signed_in
   before_action :find_votable, unless: :skip_action?
   before_action :find_or_initialize_vote, unless: :skip_action?
 
@@ -15,35 +15,20 @@ class VotesController < ApplicationController
 
   private
 
-  def check_signed_in
-    unless user_signed_in?
-      redirect_to new_user_session_path, notice: 'You have to sign up or sign in before doing that action.'
-      @skip_action = true
-    end
-  end
-
   def find_votable
-    Rails.logger.debug("Params: #{params.inspect}")
-
     if params[:comment_id]
       @votable = Comment.find(params[:comment_id])
-      Rails.logger.debug("Found comment: #{@votable.id}")
     elsif params[:post_id]
       @votable = Post.find(params[:post_id])
-      Rails.logger.debug("Found post: #{@votable.id}")
     elsif params[:id]
       if params[:controller] == 'posts'
         @votable = Post.find(params[:id])
-        Rails.logger.debug("Found post from id: #{@votable.id}")
-      else
+      elsif params[:controller] == 'comments'
         @votable = Comment.find(params[:id])
-        Rails.logger.debug("Found comment from id: #{@votable.id}")
       end
     else
       raise ActiveRecord::RecordNotFound, "Couldn't find a votable object"
     end
-
-    Rails.logger.debug("Votable: #{@votable.class.name} with ID: #{@votable.id}")
   end
   # Use callbacks to share common setup or constraints between actions.
   def find_or_initialize_vote
@@ -69,9 +54,5 @@ class VotesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def vote_params
     params.require(:vote).permit(:user_id, :post_id, :comment_id, :vote_type)
-  end
-
-  def skip_action?
-    @skip_action
   end
 end

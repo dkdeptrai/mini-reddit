@@ -1,5 +1,6 @@
 <div class="mx-auto md:w-2/3 w-full flex flex-col">
   <%= turbo_stream_from 'posts' %>
+  <%= turbo_stream_from 'comments' %>
   <div class="mx-auto">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
@@ -16,7 +17,9 @@
       <%= render 'comments/form', commentable: @post, comment: @new_comment %>
 
       <div class="comments-container">
-        <%= render @comments %>
+        <% @comments.each do |comment| %>
+          <%= render partial: 'comments/comment', locals: {comment: comment} %>
+        <% end %>
       </div>
     </div>
   </div>

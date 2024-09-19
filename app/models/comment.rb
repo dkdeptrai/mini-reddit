@@ -27,4 +27,10 @@ class Comment < ApplicationRecord
   has_many :votes, as: :votable, dependent: :destroy
 
   has_rich_text :body
+
+  validates :body, presence: true
+  validates :user_id, presence: true
+  validates :commentable_id, presence: true
+  validates :commentable_type, presence: true
+
 end

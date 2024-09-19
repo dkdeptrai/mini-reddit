@@ -1,19 +1,46 @@
 class CommentsController < ApplicationController
 
-  before_action :set_commentable
+  include Authenticatable
 
+  before_action :set_commentable, only: %i[new create show index]
+  before_action :set_comment, only: %i[show]
+  before_action :check_owner, only: %i[destroy edit update], unless: :skip_action?
+
+  def edit
+
+  end
+
+  def update
+    if @comment.update(comment_params)
+      redirect_to @comment.commentable, notice: 'Comment was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @comment.destroy
+    redirect_to @comment.commentable, notice: 'Comment was successfully destroyed.'
+  end
   def new
     @comment = @commentable.comments.new
   end
 
-  def create
-    @comment = @commentable.comments.build(comment_params)
+  def show
+  end
 
+  def create
+    @comment = @commentable.comments.build(comment_params.merge(user_id: current_user.id))
     if @comment.save
       redirect_to @commentable, notice: 'Comment was successfully created.'
     else
+      Rails.logger.debug("Error saving comment: #{@comment.errors.full_messages}")
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def index
+
   end
 
   private
@@ -22,15 +49,30 @@ class CommentsController < ApplicationController
     params.require(:comment).permit(:user_id, :commentable_id, :commentable_type, :body)
   end
 
-  def set_commentable
-    if params[:post_id]
-      @commentable = Post.find(params[:post_id])
-    elsif params[:comment_id]
-      @commentable = Comment.find(params[:comment_id])
-    else
-      Raise "Unsupportable commentable type"
+  def check_owner
+    unless @comment.user == current_user
+      redirect_to @comment.commentable, notice: 'You are not the owner of this comment.'
     end
-    Rails.logger.debug "Commentable: #{@commentable}"
+  end
+
+  def set_comment
+    @comment = Comment.find(params[:comment_id])
+  end
+
+  def set_commentable
+    if params[:comment_id]
+      @commentable = Comment.find(params[:comment_id])
+    elsif params[:post_id]
+      @commentable = Post.find(params[:post_id])
+    elsif params[:id]
+      if params[:controller] == 'posts'
+        @commentable = Post.find(params[:id])
+      elsif params[:controller] == 'comments'
+        @commentable = Comment.find(params[:id])
+      end
+    else
+      raise ActiveRecord::RecordNotFound, "Couldn't find a votable object"
+    end
   end
 
 end

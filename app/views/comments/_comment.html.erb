@@ -1,17 +1,9 @@
 <% if comment.persisted? %>
-  <div id="<%= dom_id(comment) %>" class="flex flex-row gap-4">
-    <p class="my-5">
-      <strong class="block font-medium text-2xl mb-1">
-        <%= comment.user ? comment.user.username : 'Anonymous' %>
-      </strong>
-      <%= comment.body %>
-    </p>
-    <p>
-      <%= pluralize(comment.votes_count || 0, 'votes') %>
-    </p>
-    <div class="voting-buttons flex flex-row gap-8">
-      <%= button_to "Upvote", upvote_post_comment_path(comment.commentable, comment, comment_id: comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(comment) } %>
-      <%= button_to "Downvote", downvote_post_comment_path(comment.commentable, comment, comment_id: comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(comment) } %>
-    </div>
+  <%= render partial: 'comments/comment_content', locals: { comment: comment } %>
+  <div class="ml-8">
+    <% comment.comments.each do |reply| %>
+      <%= render partial: 'comments/comment', locals: { comment: reply } %>
+    <% end %>
   </div>
+
 <% end %>

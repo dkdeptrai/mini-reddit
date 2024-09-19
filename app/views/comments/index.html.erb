@@ -1,7 +1,19 @@
-<div class="image_container">
-  <img src="https://picsum.photos/200/300" class="image" alt="">
-  <img src="https://picsum.photos/200/300" class="image" alt="">
-  <img src="https://picsum.photos/200/300" class="image" alt="">
-  <img src="https://picsum.photos/200/300" class="image" alt="">
-  <img src="https://picsum.photos/200/300" class="image" alt="">
+<div id="<%= dom_id(@comment) %>">
+  <p class="my-5">
+    <strong class="block font-medium text-2xl mb-1">
+      <%= @comment.user ? @comment.user.username : 'Anonymous' %>
+    </strong>
+    <%= @comment.body %>
+  </p>
+  <p>
+    <%= pluralize(@comment.votes_count || 0, 'votes') %>
+  </p>
+  <div class="voting-buttons flex flex-row gap-8">
+    <%= button_to "Upvote", upvote_post_comment_path(@comment.commentable, @comment, comment_id: @comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(@comment) } %>
+    <%= button_to "Downvote", downvote_post_comment_path(@comment.commentable, @comment, comment_id: @comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(@comment) } %>
+  </div>
+  <% @comment.replies.each do |comment| %>
+    <%= render partial: 'comments/comment', locals: { comment: comment } %>
+  <% end %>
+
 </div>
