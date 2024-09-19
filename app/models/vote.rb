@@ -59,8 +59,16 @@ class Vote < ApplicationRecord
   end
 
   def broadcast_vote
-    broadcast_replace_to('posts', target: "post_#{votable.id}", partial: 'posts/post', locals: { post: votable, user: user }) if votable_type == 'Post'
-    broadcast_replace_to('comments', target: "comment_#{votable.id}", partial: 'comments/comment', locals: { comment: votable, user: user }) if votable_type == 'Comment'
+    if votable_type == 'Post'
+      broadcast_replace_to('posts', target: "post_#{votable.id}", partial: 'posts/post', locals: { post: votable })
+      Rails.logger.debug("Broadcasting vote to post_#{votable.id}")
+    elsif votable_type == 'Comment'
+      broadcast_replace_to('comments', target: "content_comment_#{votable.id}", partial: 'comments/comment_content', locals: { comment: votable })
+      Rails.logger.debug("Broadcasting vote to content_comment_#{votable.id}")
+    end
+
+    # broadcast_replace_to('posts', target: "post_#{votable.id}", partial: 'posts/post', locals: { post: votable, user: user }) if votable_type == 'Post'
+    # broadcast_replace_to('comments', target: "content_comment#{votable.id}", partial: 'comments/comment_content', locals: { comment: votable, user: user }) if votable_type == 'Comment'
 
   end
 end

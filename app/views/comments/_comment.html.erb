@@ -1,9 +1,10 @@
 <% if comment.persisted? %>
-  <%= render partial: 'comments/comment_content', locals: { comment: comment } %>
-  <div class="ml-8">
-    <% comment.comments.each do |reply| %>
-      <%= render partial: 'comments/comment', locals: { comment: reply } %>
-    <% end %>
+  <div id="<%= dom_id(comment) %>">
+      <%= render partial: 'comments/comment_content', locals: { comment: comment } %>
+    <div id="<% dom_id(comment, "replies") %>" class="ml-8">
+      <% comment.comments.each do |reply| %>
+        <%= render partial: 'comments/comment', locals: { comment: reply } %>
+      <% end %>
+    </div>
   </div>
-
 <% end %>

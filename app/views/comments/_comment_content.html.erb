@@ -1,4 +1,4 @@
-<div id="<%= dom_id(comment) %>" class="flex flex-row gap-4" data-controller="comment-reply">
+<div id="<%= dom_id(comment, "content") %>" class="flex flex-row gap-4" data-controller="comment-reply">
   <p class="my-5">
     <strong class="block font-medium text-2xl mb-1">
       <%= comment.user ? comment.user.username : 'Anonymous' + "says:" %>
