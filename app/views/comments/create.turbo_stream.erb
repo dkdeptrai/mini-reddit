@@ -1,0 +1,6 @@
+<%= turbo_stream.prepend dom_id(@comment.commentable, 'comments'), partial: 'comments/comment', locals: {comment: @comment}%>
+<%= turbo_stream.replace dom_id(@comment.commentable, 'new_comment'), partial: 'comments/form', locals: {commentable: @commentable, comment: Comment.new} %>
+<%= turbo_stream.replace dom_id(@post, 'comments_count') do %>
+  <%= link_to pluralize(@post.comments.count, "Comment"), post_path(@commentable), class: "block font-medium mb-1" %>
+<% end %>
+<%= turbo_stream.replace 'notice', partial: 'shared/notice', locals: { notice: 'Comment posted successfully!' } %>

@@ -2,9 +2,7 @@
   <%= turbo_stream_from 'posts' %>
   <%= turbo_stream_from 'comments' %>
   <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
+    <%= render partial: 'shared/notice' %>
 
     <%= render @post %>
 
@@ -16,9 +14,9 @@
     <div>
       <%= render 'comments/form', commentable: @post, comment: @new_comment %>
 
-      <div class="comments-container">
+      <div id="<%= dom_id(@post, 'comments') %>" class="comments-container">
         <% @comments.each do |comment| %>
-          <%= render partial: 'comments/comment', locals: {comment: comment} %>
+          <%= render partial: 'comments/comment', locals: {comment: comment, post: @post} %>
         <% end %>
       </div>
     </div>

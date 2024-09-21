@@ -17,16 +17,15 @@
   </p>
   <p>
     <strong class="block font-medium mb-1">Votes:</strong>
-    <%= pluralize(post.votes_count || 0, 'votes') %>
+      <%= pluralize(post.votes_count || 0, 'votes') %>
   </p>
   <div class="voting-buttons flex flex-row gap-8">
     <%= button_to "Upvote", upvote_post_path(post, post_id: post.id), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
     <%= button_to "Downvote", downvote_post_path(post, post_id: post.id), class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(post) } %>
   </div>
 
-  <div class="comments">
-    <p><%= %></p>
-    <%= link_to  pluralize(post.comments.count, "Comment"), post_path(post), class: "block font-medium mb-1" %>
+  <div id="<%= dom_id(post, "comments_count") %>" class="comments">
+    <%= link_to pluralize(post.comments.count, "Comment"), post_path(post), class: "block font-medium mb-1" %>
   </div>
 
 </div>

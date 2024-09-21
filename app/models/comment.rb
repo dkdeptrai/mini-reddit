@@ -33,4 +33,12 @@ class Comment < ApplicationRecord
   validates :commentable_id, presence: true
   validates :commentable_type, presence: true
 
+  def root_commentable
+    comment = self
+    while comment.commentable.is_a? Comment
+      comment = comment.commentable
+    end
+
+    comment.commentable
+  end
 end

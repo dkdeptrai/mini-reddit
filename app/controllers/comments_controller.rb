@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
 
   before_action :set_commentable, only: %i[new create show index]
   before_action :set_comment, only: %i[show]
+  before_action :set_post
   before_action :check_owner, only: %i[destroy edit update], unless: :skip_action?
 
   def edit
@@ -22,6 +23,7 @@ class CommentsController < ApplicationController
     @comment.destroy
     redirect_to @comment.commentable, notice: 'Comment was successfully destroyed.'
   end
+
   def new
     @comment = @commentable.comments.new
   end
@@ -32,10 +34,13 @@ class CommentsController < ApplicationController
   def create
     @comment = @commentable.comments.build(comment_params.merge(user_id: current_user.id))
     if @comment.save
-      redirect_to @commentable, notice: 'Comment was successfully created.'
+      respond_to do |format|
+        format.html { redirect_to @commentable, notice: 'Comment was successfully created.' }
+        format.turbo_stream
+      end
     else
       Rails.logger.debug("Error saving comment: #{@comment.errors.full_messages}")
-      render :new, status: :unprocessable_entity
+      render @post, status: :unprocessable_entity, notice: 'Comment was not created.'
     end
   end
 
@@ -47,6 +52,14 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:user_id, :commentable_id, :commentable_type, :body)
+  end
+
+  def set_post
+    if @commentable.is_a? Comment
+      @post = @commentable.root_commentable
+    else
+      @post = @commentable
+    end
   end
 
   def check_owner
