@@ -1,8 +1,9 @@
 <div id="reply_form_#<%= dom_id(parent_comment) %>"<%=  %>>
-  <%= form_with model: [parent_comment, Comment.new], local: false, class: "form", data: { target: "comment-reply.replyForm" } do |form| %>
+  <% comment = parent_comment.comments.build %>
+  <%= form_with model: [parent_comment, comment], local: true, class: "form", data: { target: "comment-reply.replyForm" } do |form| %>
     <div class="field">
       <%= form.label :body, "Reply" %>
-      <%= form.rich_text_area :body, id: :comment_body %>
+      <%= form.text_area :body, id: :comment_body %>
     </div>
     <div class="action">
       <%= form.submit "Send Reply" %>

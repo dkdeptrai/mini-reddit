@@ -14,21 +14,17 @@
  *= require_self
  */
 
-.image-container {
-  display: flex;
-  height: 100vh;
+::-webkit-scrollbar {
+  width: 16px;
 }
 
-.individual-image {
-  width: 10%;
-  height: auto;
-  border: #ff243d 2px solid;
-  object-fit: cover;
-  transition: width 0.5s;
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
 }
 
-.individual-image:hover {
-  width: 30%;
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
 }
-
-

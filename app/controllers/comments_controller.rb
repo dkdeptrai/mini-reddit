@@ -33,6 +33,9 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @commentable.comments.build(comment_params.merge(user_id: current_user.id))
+    Rails.logger.debug("Incoming params: #{params.inspect}")
+
+    Rails.logger.debug("Comment params: #{params[:comment].inspect}")
     if @comment.save
       respond_to do |format|
         format.html { redirect_to @commentable, notice: 'Comment was successfully created.' }
