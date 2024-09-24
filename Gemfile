@@ -75,3 +75,5 @@ gem "annotate", "~> 3.2"
 gem "tailwindcss-rails", "~> 2.7"
 
 gem "omniauth-google-oauth2", "~> 1.1"
+
+gem "inline_svg", "~> 1.10"

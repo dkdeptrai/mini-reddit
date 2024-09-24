@@ -8,7 +8,8 @@ export default class extends Controller {
 	connect() {
 
 		this.close();
-		useClickOutside(this, { element: this.contentTarget, events: ["click"], onlyVisible: true });
+		useClickOutside(this, {element: this.contentTarget, events: ["click"], onlyVisible: true});
+		console.log("connected");
 	}
 
 	closeOnBigScreen() {
@@ -37,12 +38,14 @@ export default class extends Controller {
 
 
 	open() {
-		this.contentTarget.classList.remove("hidden");
 		document.querySelector("main")?.classList.add("blur");
+		console.log("open");
 	}
 
 	close() {
 		this.contentTarget.classList.add("hidden");
 		document.querySelector("main")?.classList.remove("blur");
+		console.log("close");
+
 	}
 }

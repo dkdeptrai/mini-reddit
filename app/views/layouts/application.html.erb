@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark">
+<html class="<%= cookies[:theme] == 'dark' ? 'dark' : '' %>">
 <head>
   <title>MiniReddit</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,39 +12,62 @@
   <%= hotwire_livereload_tags if Rails.env.development? %>
 </head>
 
-<body class="w-full text-primary-light bg-background-light dark:text-primary-dark dark:bg-background-dark">
-<header class="sticky top-0 w-full border-b-2 bg-background-light border-border-light dark:bg-background-dark dark:border-border-dark" data-controller="navbar" data-action="resize@window->navbar#closeOnBigScreen keyup@window->navbar#closeWithKeyboard">
+<body class="w-full text-primary-light bg-background-light dark:text-primary-dark dark:bg-background-dark" data-controller="navbar">
+<header
+  class="sticky top-0 flex w-full flex-row items-center gap-4 border-b-2 bg-background-light border-border-light dark:bg-background-dark dark:border-border-dark"
+  data-action="resize@window->navbar#closeOnBigScreen keyup@window->navbar#closeWithKeyboard">
 
-    <nav class="flex w-auto flex-row items-center justify-between gap-8 p-4">
-      <div class="md:hidden" role="button" data-action="click->navbar#toggle">
-        dropdown
-      </div>
-      <a href="/" class="text-2xl font-bold">MiniReddit</a>
-      <div>
-        <% if current_user.nil? %>
-          <%= button_to "Log In", new_user_session_path, method: :get %>
-        <% else %>
-          <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
-        <% end %>
-      </div>
-    </nav>
-    <nav class="hidden bg-pink-500 w-80 h-screen overflow-y-auto z-10" data-navbar-target="content">
-      <%= (1..200).each do |i| %>
-        <p><%= i %></p>
+
+  <nav class="flex w-auto flex-row items-center justify-between gap-8 p-4">
+
+    <div class="md:hidden" role="button" data-action="click->navbar#toggle">
+      <%= inline_svg_tag("burger-menu-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
+    </div>
+    <a href="/" class="text-2xl font-bold">MiniReddit</a>
+    <div>
+      <% if current_user.nil? %>
+        <%= button_to "Log In", new_user_session_path, method: :get %>
+      <% else %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
       <% end %>
-    </nav>
+    </div>
+  </nav>
+
+  <div
+    role="button"
+    data-controller="theme" data-theme-target="toggle"
+    data-action="click->theme#switchTheme"
+    class="h-6 w-6">
+    <% if cookies[:theme] == 'dark' %>
+      <span>
+        <%= inline_svg_tag("dark-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
+
+      </span>
+    <% else %>
+      <span>
+        <%= inline_svg_tag("light-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
+      </span>
+    <% end %>
+  </div>
+
+
 </header>
 
 <div class="flex flex-row">
-  <div class="hidden w-1/6 flex-col justify-between border-r-2 p-4 border-border-light dark:border-border-dark md:flex">
-    <p>top</p>
+  <nav class="z-10 h-screen px-2 w-80 flex-col overflow-y-auto border-r-2 border-border-light bg-background-light dark:border-border-dark dark:bg-background-dark md:flex" data-navbar-target="content">
+    <div>
+      <p>top</p>
+      <% (1..10).each do |i| %>
+        <p><%= i %></p>
+      <% end %>
+    </div>
     <p>bottom</p>
-  </div>
-  <main class="container mx-auto flex w-5/6 p-4 flex-grow">
+
+  </nav>
+  <main class="container mx-auto flex w-5/6 flex-grow p-4">
     <%= yield %>
   </main>
 </div>
 
 </body>
 </html>
-

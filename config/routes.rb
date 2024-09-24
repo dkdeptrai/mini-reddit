@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  post 'update_theme', to: 'theme#update_theme'
+  get 'load_theme', to: 'theme#load_theme'
   resources :posts do
     member do
       post 'upvote', to: 'votes#upvote'
@@ -11,6 +14,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+
 
   resources :comments do
     member do
@@ -29,3 +34,4 @@ Rails.application.routes.draw do
 
   root "posts#index"
 end
+
