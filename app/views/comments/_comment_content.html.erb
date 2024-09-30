@@ -1,19 +1,23 @@
-<div id="<%= dom_id(comment, "content") %>" class="flex flex-row gap-4" data-controller="comment-reply">
+<div id="<%= dom_id(comment, "content") %>" class="flex flex-col gap-4" data-controller="comment-reply">
   <p class="my-5">
-    <strong class="block font-medium text-2xl mb-1">
-      <%= comment.user ? comment.user.username : 'Anonymous' + "says:" %>
-    </strong>
+    <div class="flex flex-row gap-4">
+      <strong >
+      <%= comment.user.username %>
+      </strong>
+      <span>
+        <%= time_ago_in_words(comment.created_at) + " ago" %>
+      </span>
+    </div>
     <%= comment.body %>
   </p>
   <p>
-    <%= pluralize(comment.votes_count || 0, 'votes') %>
+
   </p>
 
   <button data-action="comment-reply#toggleReplyForm">Reply</button>
 
   <div class="voting-buttons flex flex-row gap-8">
-    <%= button_to "Upvote", upvote_post_comment_path(comment.commentable, comment, comment_id: comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(comment) } %>
-    <%= button_to "Downvote", downvote_post_comment_path(comment.commentable, comment, comment_id: comment.id), method: :post, class: "bg-blue-600 text-white p-4", data: { turbo_frame: dom_id(comment) } %>
+    <%= render 'shared/vote', votable: comment %>
 
     <div data-comment-reply-target="replyForm" style="display: none">
       <%= turbo_frame_tag "reply_form_#{comment.id}" do %>

@@ -1,6 +1,9 @@
 <div class="mx-auto md:w-2/3 w-full flex flex-col">
   <%= turbo_stream_from 'posts' %>
   <%= turbo_stream_from 'comments' %>
+
+  <%= content_for :title, @post.title %>
+
   <div class="mx-auto">
     <%= render partial: 'shared/notice' %>
 
@@ -16,7 +19,7 @@
 
       <div id="<%= dom_id(@post, 'comments') %>" class="comments-container">
         <% @comments.each do |comment| %>
-          <%= render partial: 'comments/comment', locals: {comment: comment, post: @post} %>
+          <%= render partial: 'comments/comment', locals: { comment: comment, post: @post } %>
         <% end %>
       </div>
     </div>

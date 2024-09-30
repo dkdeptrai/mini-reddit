@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html class="<%= cookies[:theme] == 'dark' ? 'dark' : '' %>">
 <head>
-  <title>MiniReddit</title>
+  <title>
+    <% if content_for?(:title) %>
+      <%= yield(:title) %>
+    <% else %>
+      MiniReddit
+    <% end %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
