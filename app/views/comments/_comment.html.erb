@@ -1,5 +1,5 @@
 <% if comment.persisted? %>
-  <div id="<%= dom_id(comment) %>">
+  <div id="<%= dom_id(comment) %>" class="pb-4">
       <%= render partial: 'comments/comment_content', locals: { comment: comment } %>
     <div id="<% dom_id(comment, "replies") %>" class="ml-8">
       <% comment.comments.each do |reply| %>

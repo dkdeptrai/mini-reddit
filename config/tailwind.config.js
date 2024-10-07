@@ -35,9 +35,14 @@ module.exports = {
 					dark: "#3F4142"
 				},
 				accent: {
-					light: "#000001",
-					dark: "#FFFFFF"
+					light: "#E5ECEF",
+					dark: "#2A3336"
 				},
+				hover: {
+					light: "#E7EBEE",
+					dark: "#DCE5E9",
+				},
+
 			}
 		},
 	},

@@ -1,0 +1,33 @@
+<header
+  class="sticky top-0 z-50 flex w-full flex-row items-center gap-4 border-b-2 bg-background-light border-border-light dark:bg-background-dark dark:border-border-dark"
+  data-action="resize@window->navbar#closeOnBigScreen keyup@window->navbar#closeWithKeyboard">
+
+
+  <nav class="flex w-auto flex-row items-center justify-between gap-8 p-4">
+
+    <div class="md:hidden" role="button" data-navbar-target="toggleButton" data-action="click->navbar#toggle" aria-expanded="false">
+      <%= inline_svg_tag("burger-menu-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
+    </div>
+    <a href="/" class="text-2xl font-bold">MiniReddit</a>
+    <div>
+      <% if current_user.nil? %>
+        <%= button_to "Log In", new_user_session_path, method: :get %>
+      <% else %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
+      <% end %>
+    </div>
+  </nav>
+
+  <div
+    role="button"
+    data-controller="theme"
+    data-theme-target="toggle"
+    data-action="click->theme#switchTheme"
+    data-theme-dark-icon-value='<%= inline_svg_tag("dark-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>'
+    data-theme-light-icon-value='<%= inline_svg_tag("light-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>'
+    aria-label="Toggle dark mode"
+    class="h-6 w-6">
+  </div>
+
+
+</header>

@@ -17,62 +17,31 @@
   <%= hotwire_livereload_tags if Rails.env.development? %>
 </head>
 
-<body class="w-full text-primary-light bg-background-light dark:text-primary-dark dark:bg-background-dark" data-controller="navbar">
-<header
-  class="sticky top-0 flex w-full flex-row items-center gap-4 border-b-2 bg-background-light border-border-light dark:bg-background-dark dark:border-border-dark"
-  data-action="resize@window->navbar#closeOnBigScreen keyup@window->navbar#closeWithKeyboard">
+<body class="flex h-full w-full flex-col overflow-hidden text-primary-light bg-background-light dark:text-primary-dark dark:bg-background-dark"
+      data-controller="navbar"
+      data-navbar-hidden-class="hidden"
+      data-navbar-blur-class="blur">
 
+<%= render partial: 'shared/header' %>
 
-  <nav class="flex w-auto flex-row items-center justify-between gap-8 p-4">
-
-    <div class="md:hidden" role="button" data-action="click->navbar#toggle">
-      <%= inline_svg_tag("burger-menu-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
-    </div>
-    <a href="/" class="text-2xl font-bold">MiniReddit</a>
-    <div>
-      <% if current_user.nil? %>
-        <%= button_to "Log In", new_user_session_path, method: :get %>
-      <% else %>
-        <%= button_to "Sign Out", destroy_user_session_path, method: :delete %>
-      <% end %>
-    </div>
-  </nav>
-
-  <div
-    role="button"
-    data-controller="theme" data-theme-target="toggle"
-    data-action="click->theme#switchTheme"
-    class="h-6 w-6">
-    <% if cookies[:theme] == 'dark' %>
-      <span>
-        <%= inline_svg_tag("dark-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
-
-      </span>
-    <% else %>
-      <span>
-        <%= inline_svg_tag("light-icon.svg", class: "w-6 h-6 fill-current text-gray-600 dark:text-gray-300") %>
-      </span>
-    <% end %>
-  </div>
-
-
-</header>
-
-<div class="flex flex-row">
-  <nav class="z-10 h-screen px-2 w-80 flex-col overflow-y-auto border-r-2 border-border-light bg-background-light dark:border-border-dark dark:bg-background-dark md:flex" data-navbar-target="content">
+<div class="flex w-full flex-row overflow-hidden scroll-pt-8">
+  <nav class="hidden h-screen w-80 flex-col overflow-y-auto border-r-2 px-2 border-border-light bg-background-light dark:border-border-dark dark:bg-background-dark md:flex" data-navbar-target="content">
+    <!-- Nav content -->
     <div>
       <p>top</p>
-      <% (1..10).each do |i| %>
+      <% (1..100).each do |i| %>
         <p><%= i %></p>
       <% end %>
     </div>
     <p>bottom</p>
-
   </nav>
-  <main class="container mx-auto flex w-5/6 flex-grow p-4">
-    <%= yield %>
+
+  <main class="relative flex-grow h-screen overflow-y-auto">
+    <div class="absolute inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" data-navbar-target="overlay" data-action="click->navbar#close"></div>
+    <div class="p-4">
+      <%= yield %>
+    </div>
   </main>
 </div>
-
 </body>
 </html>

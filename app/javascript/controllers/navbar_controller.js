@@ -1,25 +1,32 @@
-import {Controller} from "@hotwired/stimulus";
-import {useClickOutside} from "stimulus-use";
+import { Controller } from "@hotwired/stimulus";
+import { useClickOutside, useWindowResize } from "stimulus-use";
 
 // Connects to data-controller="navbar"
 export default class extends Controller {
-	static targets = ["content"];
+	static targets = ["content", "toggleButton", "overlay"];
+	static classes = ["hidden", "blur"];
 
 	connect() {
-
 		this.close();
-		useClickOutside(this, {element: this.contentTarget, events: ["click"], onlyVisible: true});
-		console.log("connected");
+		useClickOutside(this);
+		useWindowResize(this);
+		this.addKeyboardListener();
 	}
 
-	closeOnBigScreen() {
-		if (window.innerWidth > 768) {
+	disconnect() {
+		this.removeKeyboardListener();
+	}
+
+	closeOnBigScreen({ width }) {
+		if (width > 768) {
 			this.close();
 		}
 	}
 
 	clickOutside(event) {
-		this.close();
+		if (!this.element.contains(event.target)) {
+			this.close();
+		}
 	}
 
 	closeWithKeyboard(event) {
@@ -29,23 +36,29 @@ export default class extends Controller {
 	}
 
 	toggle() {
-		if (this.contentTarget.classList.contains("hidden")) {
-			this.open();
-		} else {
-			this.close();
-		}
+		this.contentTarget.classList.contains(this.hiddenClass) ? this.open() : this.close();
 	}
 
-
 	open() {
-		document.querySelector("main")?.classList.add("blur");
-		console.log("open");
+		this.contentTarget.classList.remove(this.hiddenClass);
+		this.overlayTarget.classList.remove(this.hiddenClass);
+		this.toggleButtonTarget.setAttribute("aria-expanded", "true");
+		document.body.classList.add("overflow-hidden");
 	}
 
 	close() {
-		this.contentTarget.classList.add("hidden");
-		document.querySelector("main")?.classList.remove("blur");
-		console.log("close");
+		this.contentTarget.classList.add(this.hiddenClass);
+		this.overlayTarget.classList.add(this.hiddenClass);
+		this.toggleButtonTarget.setAttribute("aria-expanded", "false");
+		document.body.classList.remove("overflow-hidden");
+	}
 
+	addKeyboardListener() {
+		this.boundKeyHandler = this.closeWithKeyboard.bind(this);
+		document.addEventListener("keydown", this.boundKeyHandler);
+	}
+
+	removeKeyboardListener() {
+		document.removeEventListener("keydown", this.boundKeyHandler);
 	}
 }

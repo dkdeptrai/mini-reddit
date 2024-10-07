@@ -1,7 +1,7 @@
-<div class="flex w-auto flex-row items-center justify-between gap-2 rounded-full bg-gray-100 min-w-10">
+<div class="flex w-auto flex-row items-center justify-between gap-2 rounded-full bg-gray-100 bg-accent-light min-w-10 dark:bg-accent-dark dark:bg-">
   <%= button_to inline_svg_tag(
                   "arrow-up-outlined.svg",
-                  class: "hover:stroke-red-500 hover:bg-gray-200 rounded-full size-8 p-1 cursor-pointer"
+                  class: "hover:stroke-red-500 hover:bg-gray-200 rounded-full size-8 p-1 cursor-pointer stroke-primary-light dark:stroke-primary-dark"
                 ),
                 vote_paths(votable)[:upvote_path],
                 method: :post,
@@ -12,11 +12,10 @@
 
   <%= button_to inline_svg_tag(
                   "arrow-down-outlined.svg",
-                  class: "hover:stroke-blue-500 hover:bg-gray-200 rounded-full size-8 p-1 cursor-pointer"
+                  class: "hover:stroke-blue-500 hover:bg-gray-200 rounded-full size-8 p-1 cursor-pointer stroke-primary-light dark:stroke-primary-dark"
                 ),
                 vote_paths(votable)[:downvote_path],
                 method: :post,
                 class: "contents",
                 data: { turbo_frame: vote_paths(votable)[:turbo_frame] } %>
 </div>
-
